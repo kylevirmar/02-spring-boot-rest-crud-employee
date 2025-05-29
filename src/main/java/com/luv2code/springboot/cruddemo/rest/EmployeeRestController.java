@@ -74,16 +74,13 @@ public class EmployeeRestController {
     }
 
     private Employee apply(Map<String, Object> patchPayload, Employee employee) {
-        try {
-            // Convert the employee to a map
-            Map<String, Object> employeeMap = objectMapper.convertValue(employee, Map.class);
-            // Apply the patch
-            employeeMap.putAll(patchPayload);
-            // Convert back to Employee
-            return objectMapper.convertValue(employeeMap, Employee.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to apply patch: " + e.getMessage());
-        }
+        ObjectNode employeeNode = objectMapper.convertValue(employee, ObjectNode.class);
+
+        ObjectNode patchNode = objectMapper.convertValue(patchPayload, ObjectNode.class);
+
+        employeeNode.setAll(patchNode);
+
+        return objectMapper.convertValue(employeeNode, Employee.class);
     }
 
 }
