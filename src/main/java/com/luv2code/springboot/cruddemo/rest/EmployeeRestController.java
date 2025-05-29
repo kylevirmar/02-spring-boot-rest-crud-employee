@@ -57,10 +57,7 @@ public class EmployeeRestController {
     @PatchMapping("/employees/{employeeId}")
     public Employee updateEmployee(@PathVariable int employeeId, @RequestBody Map<String, Object> patchPayload){
         Employee tempEmployee = employeeService.findById(employeeId);
-
-
         // throw exception if null
-
         if(tempEmployee == null){
             throw new RuntimeException("Employee not found: " + employeeId);
         }
@@ -71,6 +68,19 @@ public class EmployeeRestController {
 
         Employee patchedEmployee = apply(patchPayload, tempEmployee);
         return employeeService.save(patchedEmployee);
+    }
+
+    @DeleteMapping("/employees/{employeeId}")
+    public String deleteEmployee(@PathVariable int employeeId){
+        Employee tempEmployee = employeeService.findById(employeeId);
+
+        if(tempEmployee == null){
+            throw new RuntimeException("Employee not found: " + employeeId);
+        }
+
+        employeeService.deleteById(employeeId);
+
+        return "Deleted employee id - " + employeeId;
     }
 
     private Employee apply(Map<String, Object> patchPayload, Employee employee) {
